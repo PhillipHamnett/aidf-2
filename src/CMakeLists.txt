@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.23)
 project(escrowtest)
 
 set(EOSIO_WASM_OLD_BEHAVIOR "Off")

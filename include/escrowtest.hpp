@@ -1,11 +1,9 @@
 #include <eosio/eosio.hpp>
-using namespace eosio;
+#include <eosio/asset.hpp>
 
-CONTRACT escrowtest : public contract {
-   public:
-      using contract::contract;
+class [[eosio::contract("escrowtest")]] escrowtest : public eosio::contract {
+  public:
+    using eosio::contract::contract;
 
-      ACTION hi( name nm );
-
-      using hi_action = action_wrapper<"hi"_n, &escrowtest::hi>;
+    [[eosio::action]] void setdeal(eosio::name user1, eosio::name user2, eosio::asset quantity1, eosio::asset quantity2, eosio::time_point expiration);
 };
