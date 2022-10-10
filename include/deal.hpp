@@ -3,7 +3,7 @@
 
 #include <eosio/crypto.hpp>
 
-class [[eosio::table("deal")]] deal {
+class [[eosio::table("deal"), eosio::contract("escrowtest")]] deal {
   private:
     uint64_t id;
     eosio::name user1;
@@ -44,10 +44,11 @@ class [[eosio::table("deal")]] deal {
     void set_user2_done(bool x){user2_done = x;}
     
     uint64_t primary_key() const {return id;}
+    uint64_t secondary_key() const {return expiry.sec_since_epoch();}
 
     EOSLIB_SERIALIZE(deal, (id)(user1)(user2)(quantity1)(quantity2)(expiry)(user1_done)(user2_done));
 };
 
-typedef eosio::multi_index< "deal"_n, deal> deal_table;
+typedef eosio::multi_index< "deal"_n, deal, eosio::indexed_by<"date"_n, eosio::const_mem_fun<deal, uint64_t, &deal::secondary_key> > > deal_table;
 
 #endif
