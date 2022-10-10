@@ -27,21 +27,21 @@ void escrowtest::on_transfer(eosio::name from, eosio::name to, eosio::asset quan
     eosio::check(itr->get_quantity1().quantity.symbol == quantity.symbol, "Wrong asset provided, symbol mismatch");
     eosio::check(itr->get_quantity1().contract == get_first_receiver(), "Wrong asset provided, contract mismatch");
     eosio::check(itr->get_user1_done() == false, "User has already paid");
+    require_recipient(itr->get_user2());
     table.modify(itr, _self, [&](auto & entry){
                  entry.set_user1_done(true);
-                 if(entry.get_user1_done() && entry.get_user2_done()) complete_deal(id);
                  });
-    require_recipient(itr->get_user2());
+    if(itr->get_user2_done()) complete_deal(id);
   } else{
     eosio::check(itr->get_quantity2().quantity.amount == quantity.amount, "Wrong asset provided, amount mismatch");
     eosio::check(itr->get_quantity2().quantity.symbol == quantity.symbol, "Wrong asset provided, symbol mismatch");
     eosio::check(itr->get_quantity2().contract == get_first_receiver(), "Wrong asset provided, contract mismatch");
     eosio::check(itr->get_user2_done() == false, "User has already paid");
+    require_recipient(itr->get_user1());
     table.modify(itr, _self, [&](auto & entry){
                  entry.set_user2_done(true);
-                 if(entry.get_user1_done() && entry.get_user2_done()) complete_deal(id);
                  });
-    require_recipient(itr->get_user1());
+    if(itr->get_user1_done()) complete_deal(id);
   }
 }
 
